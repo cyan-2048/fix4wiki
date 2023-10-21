@@ -30,4 +30,9 @@ const css_result = await postcss([autoprefixer, postcssImports, postcssSass]).pr
 	from: CSS_FILE,
 });
 
-Bun.write("dist/fix4wiki.css", css_result.css);
+const minified_css = await esbuild.transform(css_result.css, {
+	minify: true,
+	loader: "css",
+});
+
+Bun.write("dist/fix4wiki.css", minified_css.code);

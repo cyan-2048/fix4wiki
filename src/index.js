@@ -19,6 +19,6 @@ NodeList.prototype.forEach ||= Array.prototype.forEach;
 if (navigator.mozApps) {
 	// run only when on KaiOS
 	const script = document.createElement("script");
-	script.src = "/fix4wiki.min.js";
+	script.src = "/fix4wiki.js";
 	document.head.appendChild(script);
 }
