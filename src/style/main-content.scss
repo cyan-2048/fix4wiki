@@ -45,6 +45,35 @@
 			}
 		}
 
+		h1 {
+			font-size: 2rem !important;
+			line-height: 1.25;
+			font-weight: 300;
+		}
+
+		h2 {
+			font-size: 1.125rem !important;
+		}
+
+		h3 {
+			font-size: 1rem !important;
+		}
+
+		h4 {
+			font-size: 0.69rem !important;
+			font-weight: 400;
+			text-transform: uppercase;
+			letter-spacing: 0.1em;
+		}
+
+		h5 {
+			font-size: 0.8rem !important;
+		}
+
+		h6 {
+			font-size: 0.7rem !important;
+		}
+
 		ol,
 		ul {
 			padding-left: 1.5em;
