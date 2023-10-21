@@ -1,0 +1,23 @@
+{
+  "name": "fix4wiki",
+  "module": "index.ts",
+  "type": "module",
+  "scripts": {
+    "build": "bun ./scripts/build.js"
+  },
+  "devDependencies": {
+    "bun-types": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "@csstools/postcss-sass": "^5.0.1",
+    "autoprefixer": "^10.4.16",
+    "esbuild": "^0.19.5",
+    "postcss": "^8.4.31",
+    "postcss-import": "^15.1.0",
+    "postcss-scss": "^4.0.9",
+    "reset-css": "^5.0.2"
+  }
+}
