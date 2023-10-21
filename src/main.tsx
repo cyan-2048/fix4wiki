@@ -148,7 +148,7 @@ async function main() {
 		return JSON.parse(atob(getMetadata(name)));
 	}
 
-	await loadCSS("/fix4wiki.css");
+	const cssLoading = loadCSS("/fix4wiki.css");
 
 	const contentEl = document.querySelector("template").content.cloneNode(true) as HTMLElement;
 
@@ -276,10 +276,7 @@ async function main() {
 
 	document.body.innerHTML = "";
 
-	document.body.appendChild(svgThing);
-	document.body.appendChild(sidebarEl);
-
-	document.body.appendChild(
+	const mainEl = (
 		<div class="main">
 			<div class="content0-wrap">
 				{pathEl}
@@ -289,6 +286,12 @@ async function main() {
 			</div>
 		</div>
 	);
+
+	await cssLoading;
+
+	document.body.appendChild(svgThing);
+	document.body.appendChild(sidebarEl);
+	document.body.appendChild(mainEl);
 }
 
 main();
