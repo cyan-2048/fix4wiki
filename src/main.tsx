@@ -1,4 +1,4 @@
-import { loadCSS, h, template } from "./utils";
+import { loadCSS, h } from "./utils";
 
 const svgThing = (
 	<svg style="display:none" xmlns="http://www.w3.org/2000/svg" class="d-none">
@@ -21,23 +21,7 @@ const svgThing = (
 				<line x1="3" y1="18" x2="21" y2="18"></line>
 			</svg>
 		</symbol>
-		<symbol
-			id="svg-external-link"
-			width="24"
-			height="24"
-			viewBox="0 0 24 24"
-			fill="none"
-			stroke="currentColor"
-			stroke-width="2"
-			stroke-linecap="round"
-			stroke-linejoin="round"
-			class="feather feather-external-link"
-		>
-			<title id="svg-external-link-title">(external link)</title>
-			<path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-			<polyline points="15 3 21 3 21 9"></polyline>
-			<line x1="10" y1="14" x2="21" y2="3"></line>
-		</symbol>
+
 		{/*
 		<symbol id="svg-link" viewBox="0 0 24 24">
 			<title>Link</title>
@@ -57,7 +41,23 @@ const svgThing = (
 				<path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
 			</svg>
 		</symbol>
-
+		<symbol
+			id="svg-external-link"
+			width="24"
+			height="24"
+			viewBox="0 0 24 24"
+			fill="none"
+			stroke="currentColor"
+			stroke-width="2"
+			stroke-linecap="round"
+			stroke-linejoin="round"
+			class="feather feather-external-link"
+		>
+			<title id="svg-external-link-title">(external link)</title>
+			<path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+			<polyline points="15 3 21 3 21 9"></polyline>
+			<line x1="10" y1="14" x2="21" y2="3"></line>
+		</symbol>
 		<symbol id="svg-arrow-right" viewBox="0 0 24 24">
 			<title>Expand</title>
 			<svg
@@ -189,13 +189,14 @@ async function main() {
 	// useless anchors
 	contentEl.querySelectorAll("a.toc-anchor").forEach((a) => a.remove());
 
-	const externalLinkSVG = template(
-		`<svg viewBox="0 0 24 24" aria-labelledby="svg-external-link-title" style="display: inline-block;width: 1.35em;color: #9e9e9e;padding-left: 3px;"><use xlink:href="#svg-external-link"></use></svg>`
-	) as any as SVGElement;
+	// const externalLinkSVG = template(
+	// 	`<svg viewBox="0 0 24 24" aria-labelledby="svg-external-link-title" style="display: inline-block;width: 1.35em;color: #9e9e9e;padding-left: 3px;"><use xlink:href="#svg-external-link"></use></svg>`
+	// ) as any as SVGElement;
 
-	contentEl.querySelectorAll("a.is-external-link").forEach((a) => {
-		a.appendChild(externalLinkSVG.cloneNode(true));
-	});
+	// use MDI instead
+	// contentEl.querySelectorAll("a.is-external-link").forEach((a) => {
+	// 	a.appendChild(externalLinkSVG.cloneNode(true));
+	// });
 
 	const content = [<h1>{getMetadata("title")}</h1>, <p>{getMetadata("description")}</p>].concat(
 		Array.from(contentEl.firstElementChild.children)
@@ -224,10 +225,13 @@ async function main() {
 	let callbackSidebar = () => {};
 	let sidebarOpen = false;
 
+	// if you are currently at the homepage
+	const isHome = path === "home";
+
 	const sidebarEl = (
 		<div class="sidebar">
 			<div class="site-header" role="banner">
-				<a href="/" class="site-title">
+				<a href="/" class={"site-title" + (isHome ? " current" : "")}>
 					<div class="site-logo" role="img" aria-label="BananaHackers Wiki"></div>
 				</a>
 				<button
@@ -274,9 +278,13 @@ async function main() {
 							const clx = isCurrentPage ? " current" : "";
 
 							const anchorEl = (
-								<a href={_path} class={"nav-list-link" + clx}>
+								<a
+									href={_path}
+									class={
+										"nav-list-link" + clx + (_type === "externalblank" ? " is-external-link" : "")
+									}
+								>
 									{text}
-									{_type === "externalblank" ? externalLinkSVG.cloneNode(true) : null}
 								</a>
 							);
 
@@ -351,7 +359,9 @@ async function loadMDI() {
 	const resp = await fetch(runtimeSRC);
 	const text = await resp.text();
 
+	// find: mdi:"--this-part-is-a-hash--"
 	text.replace(/mdi:"(([^"\\]|\\.)*)"/g, function (a, b) {
+		// some of the result will be mdi:"mdi"
 		if (b.length > 3) {
 			loadCSS(`/_assets/css/mdi.${b}.css`);
 		}

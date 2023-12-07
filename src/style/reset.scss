@@ -16,6 +16,16 @@ body {
 .fix {
 	a {
 		color: var(--accent);
+
+		&.is-external-link:after {
+			font-family: Material Design Icons, sans-serif;
+			font-size: 24px/1;
+			padding-left: 3px;
+			display: inline-block;
+			content: "󰏌";
+			color: #9e9e9e;
+			text-decoration: none;
+		}
 	}
 
 	li {
