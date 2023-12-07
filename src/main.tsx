@@ -21,6 +21,23 @@ const svgThing = (
 				<line x1="3" y1="18" x2="21" y2="18"></line>
 			</svg>
 		</symbol>
+		<symbol
+			id="svg-external-link"
+			width="24"
+			height="24"
+			viewBox="0 0 24 24"
+			fill="none"
+			stroke="currentColor"
+			stroke-width="2"
+			stroke-linecap="round"
+			stroke-linejoin="round"
+			class="feather feather-external-link"
+		>
+			<title id="svg-external-link-title">(external link)</title>
+			<path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+			<polyline points="15 3 21 3 21 9"></polyline>
+			<line x1="10" y1="14" x2="21" y2="3"></line>
+		</symbol>
 		{/*
 		<symbol id="svg-link" viewBox="0 0 24 24">
 			<title>Link</title>
@@ -58,23 +75,7 @@ const svgThing = (
 				<polyline points="9 18 15 12 9 6"></polyline>
 			</svg>
 		</symbol>
-		<symbol
-			id="svg-external-link"
-			width="24"
-			height="24"
-			viewBox="0 0 24 24"
-			fill="none"
-			stroke="currentColor"
-			stroke-width="2"
-			stroke-linecap="round"
-			stroke-linejoin="round"
-			class="feather feather-external-link"
-		>
-			<title id="svg-external-link-title">(external link)</title>
-			<path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-			<polyline points="15 3 21 3 21 9"></polyline>
-			<line x1="10" y1="14" x2="21" y2="3"></line>
-		</symbol>
+		
 		<symbol id="svg-doc" viewBox="0 0 24 24">
 			<title>Document</title>
 			<svg
@@ -187,6 +188,14 @@ async function main() {
 
 	// useless anchors
 	contentEl.querySelectorAll("a.toc-anchor").forEach((a) => a.remove());
+
+	const externalLinkSVG = template(
+		`<svg viewBox="0 0 24 24" aria-labelledby="svg-external-link-title" style="display: inline-block;width: 1.35em;color: #9e9e9e;padding-left: 3px;"><use xlink:href="#svg-external-link"></use></svg>`
+	) as any as SVGElement;
+
+	contentEl.querySelectorAll("a.is-external-link").forEach((a) => {
+		a.appendChild(externalLinkSVG.cloneNode(true));
+	});
 
 	const content = [<h1>{getMetadata("title")}</h1>, <p>{getMetadata("description")}</p>].concat(
 		Array.from(contentEl.firstElementChild.children)
