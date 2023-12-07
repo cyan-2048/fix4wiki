@@ -303,7 +303,8 @@ async function main() {
 	// this behavior should only be allowed in specific pages
 	if (["/w2d", "/en/w2d"].includes(location.pathname))
 		document.querySelectorAll("pre.is-script").forEach((a) => {
-			eval(a.innerHTML);
+			// @ts-ignore
+			eval(a.innerText);
 		});
 }
 
