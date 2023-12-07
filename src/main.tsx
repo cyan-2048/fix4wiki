@@ -151,7 +151,7 @@ async function main() {
 
 	const cssLoading = loadCSS("/fix4wiki.css");
 
-	const contentEl = document.querySelector("template").content.cloneNode(true) as HTMLElement;
+	const contentEl = document.querySelector("template").content as any as HTMLElement;
 
 	// fix blockquote classNames
 	// contentEl.querySelectorAll(`blockquote[class^="is-"]`).forEach((a) => {
