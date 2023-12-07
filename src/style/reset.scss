@@ -2,6 +2,7 @@
 
 html {
 	font-size: 0.8rem !important;
+	--accent: #009689;
 }
 
 body {
@@ -13,6 +14,10 @@ body {
 }
 
 .fix {
+	a {
+		color: var(--accent);
+	}
+
 	li {
 		margin: 0.25em 0;
 	}

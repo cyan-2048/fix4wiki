@@ -202,6 +202,7 @@ async function main() {
 	);
 
 	const path = getMetadata("path");
+	const locale = getMetadata("locale");
 
 	const pathEl =
 		path === "home" || !path.includes("/") ? null : (
@@ -261,13 +262,34 @@ async function main() {
 					{sidebar.map((a) => {
 						const text = a.l;
 						if (a.k == "link") {
-							return (
-								<li class="nav-list-item">
-									<a href={a.t} class="nav-list-link">
-										{text}
-									</a>
-								</li>
+							const _type = a.y as "home" | "page" | "externalblank";
+							const _path = a.t as string;
+
+							const isCurrentPage =
+								_type === path ||
+								_path === path ||
+								_path === "/" + path ||
+								_path === "/" + locale + "/" + path;
+
+							const clx = isCurrentPage ? " current" : "";
+
+							const anchorEl = (
+								<a href={_path} class={"nav-list-link" + clx}>
+									{text}
+									{_type === "externalblank" ? externalLinkSVG.cloneNode(true) : null}
+								</a>
 							);
+
+							if (a.c) {
+								anchorEl.insertBefore(
+									<>
+										<i class={"mdi " + a.c}></i>{" "}
+									</>,
+									anchorEl.firstChild
+								);
+							}
+
+							return <li class={"nav-list-item" + clx}>{anchorEl}</li>;
 						}
 						if (a.k == "header") {
 							return (
@@ -309,6 +331,8 @@ async function main() {
 	document.body.appendChild(sidebarEl);
 	document.body.appendChild(mainEl);
 
+	loadMDI();
+
 	// this behavior should only be allowed in specific pages
 	if (["/w2d", "/en/w2d"].includes(location.pathname))
 		document.querySelectorAll("pre.is-script").forEach((a) => {
@@ -318,3 +342,19 @@ async function main() {
 }
 
 main();
+
+async function loadMDI() {
+	// querySelector incase the runtime script was already loaded
+	const runtimeSRC =
+		document.querySelector<HTMLScriptElement>("script[src*=runtime]")?.src ||
+		"/_assets/js/runtime.js";
+	const resp = await fetch(runtimeSRC);
+	const text = await resp.text();
+
+	text.replace(/mdi:"(([^"\\]|\\.)*)"/g, function (a, b) {
+		if (b.length > 3) {
+			loadCSS(`/_assets/css/mdi.${b}.css`);
+		}
+		return "";
+	});
+}
