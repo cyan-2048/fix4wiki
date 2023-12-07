@@ -188,7 +188,9 @@ async function main() {
 	// useless anchors
 	contentEl.querySelectorAll("a.toc-anchor").forEach((a) => a.remove());
 
-	const content = [<h1>{getMetadata("title")}</h1>, <p>{getMetadata("description")}</p>].concat(Array.from(contentEl.firstElementChild.children));
+	const content = [<h1>{getMetadata("title")}</h1>, <p>{getMetadata("description")}</p>].concat(
+		Array.from(contentEl.firstElementChild.children)
+	);
 
 	const path = getMetadata("path");
 
@@ -199,7 +201,9 @@ async function main() {
 					{path.split("/").map((a, i, arr) => {
 						const isLast = i === arr.length - 1;
 						const href = "/" + arr.slice(0, i + 1).join("/");
-						return <li class="breadcrumb-item">{isLast ? <span>{a}</span> : <a href={href}>{a}</a>}</li>;
+						return (
+							<li class="breadcrumb-item">{isLast ? <span>{a}</span> : <a href={href}>{a}</a>}</li>
+						);
 					})}
 				</ol>
 			</nav>
@@ -259,7 +263,10 @@ async function main() {
 						if (a.k == "header") {
 							return (
 								<li class="nav-list-item">
-									<small class="nav-list-link" style={`display:block;min-height: 2rem;line-height: 2rem;display:block;min-height: 1rem;line-height: 1rem;pointer-events: none;`}>
+									<small
+										class="nav-list-link"
+										style={`display:block;min-height: 2rem;line-height: 2rem;display:block;min-height: 1rem;line-height: 1rem;pointer-events: none;`}
+									>
 										{text}
 									</small>
 								</li>
@@ -292,6 +299,12 @@ async function main() {
 	document.body.appendChild(svgThing);
 	document.body.appendChild(sidebarEl);
 	document.body.appendChild(mainEl);
+
+	// this behavior should only be allowed in specific pages
+	if (["/w2d"].includes(location.pathname))
+		document.querySelectorAll("pre.is-script").forEach((a) => {
+			eval(a.innerHTML);
+		});
 }
 
 main();

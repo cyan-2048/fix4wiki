@@ -51,14 +51,18 @@ body {
 		font-size: 0.75em;
 	}
 
-	:not(pre, figure) > code {
-		font-weight: 400;
+	:not(pre),
+	:not(figure) {
+		& > code {
+			border-radius: 4px;
 
-		padding: 0.2em 0.15em;
-
-		background-color: #f1f2f8;
-		border: 1px solid #f7f2f7;
-		border-radius: 4px;
+			background-color: #e8eaf6;
+			padding: 0 5px;
+			color: #283593;
+			font-weight: 400;
+			font-size: 1rem;
+			box-shadow: none;
+		}
 	}
 
 	blockquote {
