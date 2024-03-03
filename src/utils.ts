@@ -1,5 +1,6 @@
 type Attributes = Record<string, string | Function | boolean> & {
 	ref?: (el: HTMLElement) => void;
+	svg?: boolean;
 } & Partial<GlobalEventHandlers>;
 
 type AllowedChildren = string | Node | AllowedChildren[];
@@ -20,7 +21,7 @@ export function h(
 	tagName: string | typeof FragmentElement,
 	attributes?: Attributes,
 	...childrens: AllowedChildren[]
-): DocumentFragment | HTMLElement {
+): DocumentFragment | HTMLElement | Element {
 	const el =
 		tagName === FragmentElement
 			? document.createDocumentFragment()
@@ -33,10 +34,12 @@ export function h(
 				(value as Function)(el);
 				continue;
 			}
-			// onclick etc.
-			if (key.startsWith("on")) {
+
+			if (key === "svg") continue;
+
+			if (key in el) {
 				el[key] = value;
-			} else if (typeof value == "string") el.setAttribute(key, value as string);
+			} else if (typeof value == "string") el.setAttribute(key, value);
 			else if (value) el[key] = value;
 		}
 	}
@@ -72,8 +75,24 @@ export async function loadCSS(url: string) {
 	});
 }
 
-export function template(string: string) {
+export function template<T extends Element = Element>(string: string) {
 	const el = h("div");
 	el.innerHTML = string;
-	return el.firstElementChild as HTMLElement;
+	return el.firstElementChild as T;
+}
+
+const array_slice = [].slice;
+
+export function $<K extends Element = Element>(
+	selector: string,
+	el: Element | Document | DocumentFragment = document
+) {
+	return array_slice.call(el.querySelectorAll<K>(selector)) as Array<K>;
+}
+
+export function $$<K extends Element = Element>(
+	selector: string,
+	el: Element | Document | DocumentFragment = document
+) {
+	return el.querySelector<K>(selector);
 }

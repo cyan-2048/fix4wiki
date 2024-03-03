@@ -1,10 +1,11 @@
-import { loadCSS, h } from "./utils";
+import { loadCSS, h, $, $$ } from "./utils";
 
 const svgThing = (
-	<svg style="display:none" xmlns="http://www.w3.org/2000/svg" class="d-none">
-		<symbol id="svg-menu" viewBox="0 0 24 24">
-			<title>Menu</title>
+	<svg svg style="display:none" xmlns="http://www.w3.org/2000/svg" class="d-none">
+		<symbol svg id="svg-menu" viewBox="0 0 24 24">
+			<title svg>Menu</title>
 			<svg
+				svg
 				xmlns="http://www.w3.org/2000/svg"
 				width="24"
 				height="24"
@@ -130,28 +131,33 @@ const svgThing = (
 	</svg>
 );
 
+const body = document.body;
+
 async function main() {
-	if (document.querySelector("not-found")) {
-		document.body.innerHTML = `<h1>Not Found</h1><p>this page doesn't exist</p><a href="/">Go Home</a>`;
+	// this is actually broken, i have no idea how to fix
+	if ($$("not-found")) {
+		body.innerHTML = `<h1>Not Found</h1><p>this page doesn't exist</p><a href="/">Go Home</a>`;
 		return;
 	}
 
-	document.body.className = "fix";
+	body.className = "fix";
 
-	const pageEl = document.querySelector("page");
-	if (!pageEl) return;
+	const pageEl = $$("page");
+	const contentEl = $$<HTMLTemplateElement>("template")?.content;
+
+	if (!pageEl || !contentEl) return;
 
 	function getMetadata(name: string) {
 		return pageEl.getAttribute(name);
 	}
-
 	function getMetadataBase64(name: string) {
 		return JSON.parse(atob(getMetadata(name)));
 	}
 
-	const cssLoading = loadCSS("/fix4wiki.css");
+	// remove all existing styles that we don't need
+	$("link[rel=stylesheet], style").forEach((a) => a.remove());
 
-	const contentEl = document.querySelector("template").content as any as HTMLElement;
+	const cssLoading = loadCSS("/fix4wiki.css");
 
 	// fix blockquote classNames
 	// contentEl.querySelectorAll(`blockquote[class^="is-"]`).forEach((a) => {
@@ -163,8 +169,8 @@ async function main() {
 	// });
 
 	// fix table
-	contentEl.querySelectorAll(".table").forEach((a) => {
-		a.querySelectorAll("td").forEach((b) => {
+	$(".table", contentEl).forEach((a) => {
+		$("td", a).forEach((b) => {
 			b.setAttribute("style", "");
 		});
 	});
@@ -187,7 +193,7 @@ async function main() {
 	*/
 
 	// useless anchors
-	contentEl.querySelectorAll("a.toc-anchor").forEach((a) => a.remove());
+	$("a.toc-anchor", contentEl).forEach((a) => a.remove());
 
 	// const externalLinkSVG = template(
 	// 	`<svg viewBox="0 0 24 24" aria-labelledby="svg-external-link-title" style="display: inline-block;width: 1.35em;color: #9e9e9e;padding-left: 3px;"><use xlink:href="#svg-external-link"></use></svg>`
@@ -197,10 +203,6 @@ async function main() {
 	// contentEl.querySelectorAll("a.is-external-link").forEach((a) => {
 	// 	a.appendChild(externalLinkSVG.cloneNode(true));
 	// });
-
-	const content = [<h1>{getMetadata("title")}</h1>, <p>{getMetadata("description")}</p>].concat(
-		Array.from(contentEl.firstElementChild.children)
-	);
 
 	const path = getMetadata("path");
 	const locale = getMetadata("locale");
@@ -228,6 +230,13 @@ async function main() {
 	// if you are currently at the homepage
 	const isHome = path === "home";
 
+	// minh removed it
+	// const content = (
+	// 	isHome ? [] : [<h1>{getMetadata("title")}</h1>, <p>{getMetadata("description")}</p>]
+	// ).concat(Array.from(contentEl.firstElementChild.children));
+
+	const content = Array.from(contentEl.firstElementChild.children);
+
 	const sidebarEl = (
 		<div class="sidebar">
 			<div class="site-header" role="banner">
@@ -247,8 +256,8 @@ async function main() {
 						};
 					}}
 				>
-					<svg viewBox="0 0 24 24" class="icon">
-						<use xlink:href="#svg-menu"></use>
+					<svg svg viewBox="0 0 24 24" class="icon">
+						<use svg xlink:href="#svg-menu"></use>
 					</svg>
 				</button>
 			</div>
@@ -258,7 +267,7 @@ async function main() {
 				class="site-nav"
 				ref={(el) => {
 					callbackSidebar = () => {
-						el.classList[sidebarOpen ? "add" : "remove"]("nav-open");
+						el.classList.toggle("nav-open", sidebarOpen);
 					};
 				}}
 			>
@@ -304,7 +313,7 @@ async function main() {
 								<li class="nav-list-item">
 									<small
 										class="nav-list-link"
-										style={`display:block;min-height: 2rem;line-height: 2rem;display:block;min-height: 1rem;line-height: 1rem;pointer-events: none;`}
+										style="display:block;min-height:2rem;line-height:2rem;display:block;min-height:1rem;line-height:1rem;pointer-events:none;"
 									>
 										{text}
 									</small>
@@ -320,7 +329,7 @@ async function main() {
 		</div>
 	);
 
-	document.body.innerHTML = "";
+	body.innerHTML = "";
 
 	const mainEl = (
 		<div class="main">
@@ -335,15 +344,15 @@ async function main() {
 
 	await cssLoading;
 
-	document.body.appendChild(svgThing);
-	document.body.appendChild(sidebarEl);
-	document.body.appendChild(mainEl);
+	body.appendChild(svgThing);
+	body.appendChild(sidebarEl);
+	body.appendChild(mainEl);
 
 	loadMDI();
 
 	// this behavior should only be allowed in specific pages
 	if (["/w2d", "/en/w2d"].includes(location.pathname))
-		document.querySelectorAll("pre.is-script").forEach((a) => {
+		$("pre.is-script").forEach((a) => {
 			// @ts-ignore
 			eval(a.innerText);
 		});
@@ -353,9 +362,7 @@ main();
 
 async function loadMDI() {
 	// querySelector incase the runtime script was already loaded
-	const runtimeSRC =
-		document.querySelector<HTMLScriptElement>("script[src*=runtime]")?.src ||
-		"/_assets/js/runtime.js";
+	const runtimeSRC = $$<HTMLScriptElement>("script[src*=runtime]")?.src || "/_assets/js/runtime.js";
 	const resp = await fetch(runtimeSRC);
 	const text = await resp.text();
 
