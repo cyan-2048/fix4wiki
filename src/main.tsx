@@ -230,12 +230,12 @@ async function main() {
 	// if you are currently at the homepage
 	const isHome = path === "home";
 
-	// minh removed it
-	// const content = (
-	// 	isHome ? [] : [<h1>{getMetadata("title")}</h1>, <p>{getMetadata("description")}</p>]
-	// ).concat(Array.from(contentEl.firstElementChild.children));
+	// minh became sane
+	const content = [<h1>{getMetadata("title")}</h1>, <p>{getMetadata("description")}</p>].concat(
+		Array.from(contentEl.firstElementChild.children)
+	);
 
-	const content = Array.from(contentEl.firstElementChild.children);
+	//const content = Array.from(contentEl.firstElementChild.children);
 
 	const sidebarEl = (
 		<div class="sidebar">
@@ -347,6 +347,15 @@ async function main() {
 	body.appendChild(svgThing);
 	body.appendChild(sidebarEl);
 	body.appendChild(mainEl);
+
+	const twemojiFont = new FontFace("twemoji", "/twemoji_mozilla.ttf", {
+		weight: "normal",
+		style: "normal",
+	});
+
+	twemojiFont.load().then((font) => {
+		document.fonts.add(font);
+	});
 
 	loadMDI();
 
