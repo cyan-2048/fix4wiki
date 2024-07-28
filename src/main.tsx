@@ -235,7 +235,7 @@ async function main() {
 	// 	Array.from(contentEl.firstElementChild.children)
 	// );
 
-	//const content = Array.from(contentEl.firstElementChild.children);
+	const content = Array.from(contentEl.firstElementChild.children);
 
 	const sidebarEl = (
 		<div class="sidebar">
