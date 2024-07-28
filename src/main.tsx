@@ -348,7 +348,7 @@ async function main() {
 	body.appendChild(sidebarEl);
 	body.appendChild(mainEl);
 
-	const twemojiFont = new FontFace("twemoji", "/twemoji_mozilla.ttf", {
+	const twemojiFont = new FontFace("twemoji", "url(/twemoji_mozilla.ttf)", {
 		weight: "normal",
 		style: "normal",
 	});
