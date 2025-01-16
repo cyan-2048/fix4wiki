@@ -231,11 +231,12 @@ async function main() {
 	const isHome = path === "home";
 
 	// minh became sane, minh did the cringe thing again
-	// const content = [<h1>{getMetadata("title")}</h1>, <p>{getMetadata("description")}</p>].concat(
-	// 	Array.from(contentEl.firstElementChild.children)
-	// );
+	// minh keeps changing the layout, is minh a chameleon?
+	const content = [<h1>{getMetadata("title")}</h1>, <p>{getMetadata("description")}</p>].concat(
+		Array.from(contentEl.firstElementChild.children)
+	);
 
-	const content = Array.from(contentEl.firstElementChild.children);
+	// const content = Array.from(contentEl.firstElementChild.children);
 
 	const sidebarEl = (
 		<div class="sidebar">
